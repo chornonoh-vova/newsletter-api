@@ -1,5 +1,8 @@
+use newsletter_api::telemetry::{get_subscriber, init_subscriber};
+use secrecy::ExposeSecret;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
+use std::sync::LazyLock;
 use uuid::Uuid;
 
 use newsletter_api::configuration::{get_configuration, DatabaseSettings};
@@ -10,7 +13,22 @@ pub struct TestApp {
     pub db_pool: PgPool,
 }
 
+static TRACING: LazyLock<()> = LazyLock::new(|| {
+    let name = "test".to_string();
+    let env_filter = "debug".to_string();
+
+    if std::env::var("TEST_LOG").is_ok() {
+        let subscriber = get_subscriber(name, env_filter, std::io::stdout);
+        init_subscriber(subscriber);
+    } else {
+        let subscriber = get_subscriber(name, env_filter, std::io::sink);
+        init_subscriber(subscriber);
+    };
+});
+
 async fn spawn_app() -> TestApp {
+    LazyLock::force(&TRACING);
+
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     // We retrieve the port assigned to us by the OS
     let port = listener.local_addr().unwrap().port();
@@ -33,16 +51,17 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
         database_name: "postgres".to_string(),
         ..config.clone()
     };
-    let mut connection = PgConnection::connect(&maintenance_settings.connection_string())
-        .await
-        .expect("Failed to connect to Postgres");
+    let mut connection =
+        PgConnection::connect(&maintenance_settings.connection_string().expose_secret())
+            .await
+            .expect("Failed to connect to Postgres");
     connection
         .execute(format!(r#"CREATE DATABASE "{}";"#, config.database_name).as_str())
         .await
         .expect("Failed to create database.");
 
     // Migrate database
-    let connection_pool = PgPool::connect(&config.connection_string())
+    let connection_pool = PgPool::connect(&config.connection_string().expose_secret())
         .await
         .expect("Failed to connect to Postgres.");
     sqlx::migrate!("./migrations")
