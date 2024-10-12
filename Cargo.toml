@@ -8,7 +8,7 @@ path = "src/lib.rs"
 
 [[bin]]
 path = "src/main.rs"
-name = "newsletter"
+name = "newsletter-api"
 
 [dependencies]
 actix-web = "4.9.0"
@@ -16,6 +16,7 @@ chrono = { version = "0.4.38", features = ["clock"], default-features = false }
 config = "0.14.0"
 secrecy = { version = "0.10.2", features = ["serde"] }
 serde = { version = "1.0.210", features = ["derive"] }
+serde-aux = "4.5.0"
 sqlx = { version = "0.8.2", default-features = false, features = [
     "runtime-tokio-rustls",
     "macros",
