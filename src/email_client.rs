@@ -1,11 +1,11 @@
-use reqwest::{Client, Url};
+use reqwest::Client;
 use secrecy::{ExposeSecret, SecretString};
 
 use crate::domain::SubscriberEmail;
 
 pub struct EmailClient {
     http_client: Client,
-    base_url: Url,
+    base_url: String,
     sender: SubscriberEmail,
     authorization_token: SecretString,
 }
@@ -15,14 +15,12 @@ impl EmailClient {
         base_url: String,
         sender: SubscriberEmail,
         authorization_token: SecretString,
+        timeout: std::time::Duration,
     ) -> Self {
-        let http_client = Client::builder()
-            .timeout(std::time::Duration::from_secs(10))
-            .build()
-            .unwrap();
+        let http_client = Client::builder().timeout(timeout).build().unwrap();
         Self {
             http_client,
-            base_url: Url::parse(&base_url).unwrap(),
+            base_url,
             sender,
             authorization_token,
         }
@@ -35,7 +33,7 @@ impl EmailClient {
         html_content: &str,
         text_content: &str,
     ) -> Result<(), reqwest::Error> {
-        let url = self.base_url.join("email").unwrap();
+        let url = format!("{}/email", self.base_url);
         let request_body = SendEmailRequest {
             from: self.sender.as_ref(),
             to: recipient.as_ref(),
@@ -118,6 +116,7 @@ mod tests {
             base_url,
             email(),
             SecretString::new(Faker.fake::<String>().into_boxed_str()),
+            std::time::Duration::from_millis(200),
         )
     }
 
