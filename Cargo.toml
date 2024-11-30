@@ -12,6 +12,7 @@ name = "newsletter-api"
 
 [dependencies]
 actix-web = "4.9.0"
+anyhow = "1.0.93"
 chrono = { version = "0.4.38", features = ["clock"], default-features = false }
 config = "0.14.1"
 rand = { version = "0.8.5", features = ["std_rng"] }
@@ -27,6 +28,7 @@ sqlx = { version = "0.8.2", default-features = false, features = [
     "chrono",
     "migrate",
 ] }
+thiserror = "2.0.3"
 tokio = { version = "1.41.0", features = ["macros", "rt-multi-thread"] }
 tracing = { version = "0.1.40", features = ["log"] }
 tracing-actix-web = "0.7.14"
