@@ -18,7 +18,7 @@ config = "0.14.1"
 rand = { version = "0.8.5", features = ["std_rng"] }
 reqwest = { version = "0.12.9", default-features = false, features = ["json", "rustls-tls"] }
 secrecy = { version = "0.10.3", features = ["serde"] }
-serde = { version = "1.0.214", features = ["derive"] }
+serde = { version = "1.0.215", features = ["derive"] }
 serde-aux = "4.5.0"
 sqlx = { version = "0.8.2", default-features = false, features = [
     "runtime-tokio-rustls",
@@ -29,26 +29,26 @@ sqlx = { version = "0.8.2", default-features = false, features = [
     "migrate",
 ] }
 thiserror = "2.0.3"
-tokio = { version = "1.41.0", features = ["macros", "rt-multi-thread"] }
-tracing = { version = "0.1.40", features = ["log"] }
-tracing-actix-web = "0.7.14"
-tracing-bunyan-formatter = "0.3.9"
+tokio = { version = "1.41.1", features = ["macros", "rt-multi-thread"] }
+tracing = { version = "0.1.41", features = ["log"] }
+tracing-actix-web = "0.7.15"
+tracing-bunyan-formatter = "0.3.10"
 tracing-log = "0.2.0"
-tracing-subscriber = { version = "0.3.18", features = [
+tracing-subscriber = { version = "0.3.19", features = [
     "registry",
     "env-filter",
 ] }
 unicode-segmentation = "1.12.0"
 uuid = { version = "1.11.0", features = ["v4", "v7"] }
-validator = "0.18.1"
+validator = "0.19.0"
 
 [dev-dependencies]
-claims = "0.7.1"
-fake = "3.0.0"
+claims = "0.8.0"
+fake = "3.0.1"
 linkify = "0.10.0"
 quickcheck = "1.0.3"
 quickcheck_macros = "1.0.0"
 rand = "0.8.5"
 reqwest = "0.12.9"
-serde_json = "1.0.132"
+serde_json = "1.0.133"
 wiremock = "0.6.2"
