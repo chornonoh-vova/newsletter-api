@@ -13,6 +13,8 @@ name = "newsletter-api"
 [dependencies]
 actix-web = "4.9.0"
 anyhow = "1.0.93"
+argon2 = { version = "0.5.3", features = ["std"] }
+base64 = "0.22.1"
 chrono = { version = "0.4.38", features = ["clock"], default-features = false }
 config = "0.14.1"
 rand = { version = "0.8.5", features = ["std_rng"] }
