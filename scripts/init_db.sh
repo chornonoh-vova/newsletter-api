@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
+set -euo pipefail
 
 if ! [ -x "$(command -v sqlx)" ]
 then
@@ -11,6 +11,7 @@ then
     exit 1
 fi
 
+SKIP_DOCKER=""
 DB_PORT="${POSTGRES_PORT:=5432}"
 SUPERUSER="${SUPERUSER:=postgres}"
 SUPERUSER_PWD="${SUPERUSER_PWD:=password}"
