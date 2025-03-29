@@ -1,45 +1,27 @@
-use actix_web::{http::header::ContentType, web, HttpResponse};
+use actix_web::{
+    http::header::ContentType,
+    web::{self},
+    HttpResponse,
+};
 use anyhow::Context;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::session_state::TypedSession;
-
-fn e500<T>(e: T) -> actix_web::Error
-where
-    T: std::fmt::Debug + std::fmt::Display + 'static,
-{
-    actix_web::error::ErrorInternalServerError(e)
-}
+use crate::{authentication::UserId, utils::e500};
 
 pub async fn admin_dashboard(
-    session: TypedSession,
+    user_id: web::ReqData<UserId>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let username = if let Some(user_id) = session.get_user_id().map_err(e500)? {
-        get_username(user_id, &pool).await.map_err(e500)?
-    } else {
-        todo!()
-    };
+    let user_id = user_id.into_inner();
+    let username = get_username(*user_id, &pool).await.map_err(e500)?;
     Ok(HttpResponse::Ok()
         .content_type(ContentType::html())
-        .body(format!(
-            r#"<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meat http-equiv="content-type" content="text/html; charset=utf8">
-                <title>Admin dashboard</title>
-            </head>
-            <body>
-                <p>Welcome {username}</p>
-            </body>
-            </html>
-            "#
-        )))
+        .body(format!(include_str!("dashboard.html"), username)))
 }
 
 #[tracing::instrument(name = "Get username", skip(pool))]
-async fn get_username(user_id: Uuid, pool: &PgPool) -> Result<String, anyhow::Error> {
+pub async fn get_username(user_id: Uuid, pool: &PgPool) -> Result<String, anyhow::Error> {
     let row = sqlx::query!(
         r#"
         SELECT username

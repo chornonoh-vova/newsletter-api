@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meat http-equiv="content-type" content="text/html; charset=utf8">
+    <title>Admin dashboard</title>
+</head>
+<body>
+    <p>Welcome {0}</p>
+    <p>Available actions:</p>
+    <ol>
+        <li><a href="/admin/password">Change password</a></li>
+        <li>
+            <form name="logoutForm" action="/admin/logout" method="post">
+                <input type="submit" value="Logout">
+            </form>
+        </li>
+    </ol>
+</body>
+</html>
